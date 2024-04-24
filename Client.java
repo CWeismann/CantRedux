@@ -27,30 +27,47 @@ public class Client {
     private JPasswordField passwordField;
     private JButton loginButton;
     private JButton registerButton;
+    Color backgroundColor = Color.BLACK;
+    Color textColor = new Color(0, 255, 0); // Green
 
     public Client() {
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         initializeGUI();
         connectToServer();
         showLoginOrRegisterPopup();
     }
 
     private void initializeGUI() {
-        frame = new JFrame("Chat Application");
+        // Initialize the chat frame
+        frame = new JFrame("CANT");
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    
+        frame.getContentPane().setBackground(backgroundColor);
+        
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-    
+        panel.setBackground(backgroundColor);
+        
         chatArea = new JTextArea();
         chatArea.setEditable(false);
+        chatArea.setBackground(backgroundColor);
+        chatArea.setForeground(textColor);
+        chatArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         JScrollPane scrollPane = new JScrollPane(chatArea);
         panel.add(scrollPane, BorderLayout.CENTER);
     
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
+        bottomPanel.setBackground(backgroundColor);
     
         messageField = new JTextField();
+        messageField.setBackground(backgroundColor);
+        messageField.setForeground(textColor);
+        messageField.setFont(new Font("Monospaced", Font.PLAIN, 12));
         bottomPanel.add(messageField, BorderLayout.CENTER);
     
         // Add ActionListener to messageField for sending message on Enter press
@@ -66,6 +83,9 @@ public class Client {
                 sendMessage();
             }
         });
+        sendButton.setBackground(backgroundColor);
+        sendButton.setForeground(textColor);
+        sendButton.setFont(new Font("Monospaced", Font.PLAIN, 12));
         bottomPanel.add(sendButton, BorderLayout.EAST);
     
         panel.add(bottomPanel, BorderLayout.SOUTH);
@@ -136,7 +156,7 @@ public class Client {
                 if (spaceIndex != -1) {
                     String recipient = message.substring(1, spaceIndex);
                     String directMessage = message.substring(spaceIndex + 1);
-                    chatArea.append("(Direct to " + recipient + "): " + directMessage);;
+                    chatArea.append("(Direct to " + recipient + "): " + directMessage + "\n");;
                 } else {
                     writer.println("Invalid direct message format. Use '@username message'");
                 }
@@ -155,13 +175,26 @@ public class Client {
 
         JPanel loginPanel = new JPanel();
         loginPanel.setLayout(new GridLayout(3, 2));
+        loginPanel.setBackground(backgroundColor);
 
-        loginPanel.add(new JLabel("Username:"));
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setForeground(textColor);
+        usernameLabel.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        loginPanel.add(usernameLabel);
         usernameField = new JTextField();
+        usernameField.setBackground(backgroundColor);
+        usernameField.setForeground(textColor);
+        usernameField.setFont(new Font("Monospaced", Font.PLAIN, 12));
         loginPanel.add(usernameField);
 
-        loginPanel.add(new JLabel("Password:"));
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setForeground(textColor);
+        passwordLabel.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        loginPanel.add(passwordLabel);
         passwordField = new JPasswordField();
+        passwordField.setBackground(backgroundColor);
+        passwordField.setForeground(textColor);
+        passwordField.setFont(new Font("Monospaced", Font.PLAIN, 12));
         loginPanel.add(passwordField);
 
         loginButton = new JButton("Login");
@@ -173,6 +206,9 @@ public class Client {
                 writer.println(passwordField.getPassword());
             }
         });
+        loginButton.setBackground(backgroundColor);
+        loginButton.setForeground(textColor);
+        loginButton.setFont(new Font("Monospaced", Font.PLAIN, 12));
         loginPanel.add(loginButton);
 
         registerButton = new JButton("Register");
@@ -195,6 +231,9 @@ public class Client {
                 }
             }
         });
+        registerButton.setBackground(backgroundColor);
+        registerButton.setForeground(textColor);
+        registerButton.setFont(new Font("Monospaced", Font.PLAIN, 12));
         loginPanel.add(registerButton);
 
         loginFrame.getContentPane().add(loginPanel);
