@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.security.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Client {
     private static final String SERVER_HOST = "localhost";
@@ -156,9 +158,18 @@ public class Client {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                writer.println("REGISTER");
-                writer.println(usernameField.getText());
-                writer.println(passwordField.getPassword());
+                String password = new String(passwordField.getPassword());
+                Pattern pattern = Pattern.compile("\\d");
+                Matcher matcher = pattern.matcher(password);
+                if (password.length() < 8) {
+                    JOptionPane.showMessageDialog(frame, "Password must be eight characters or longer.");
+                } else if (!matcher.find()) {
+                    JOptionPane.showMessageDialog(frame, "Password must contain a number.");
+                } else {
+                    writer.println("REGISTER");
+                    writer.println(usernameField.getText());
+                    writer.println(passwordField.getPassword());
+                }
             }
         });
         loginPanel.add(registerButton);
