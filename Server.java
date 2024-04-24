@@ -59,12 +59,12 @@ public class Server {
                 // Authenticate or register the user
                 boolean isAuthenticated = false;
                 while (!isAuthenticated) {
-                    writer.println("LOGIN or REGISTER?");
+                    // writer.println("LOGIN or REGISTER?");
                     String line = reader.readLine();
                     if (line.equalsIgnoreCase("LOGIN")) {
                         isAuthenticated = login();
                     } else if (line.equalsIgnoreCase("REGISTER")) {
-                        isAuthenticated = register();
+                        register();
                     } else {
                         writer.println("Invalid option. Please enter LOGIN or REGISTER.");
                     }
@@ -88,9 +88,9 @@ public class Server {
         }
 
         private boolean login() throws IOException {
-            writer.println("Enter your username:");
+            // writer.println("Enter your username:");
             String username = reader.readLine();
-            writer.println("Enter your password:");
+            // writer.println("Enter your password:");
             String password = reader.readLine();
 
             // Check if the user exists and the password matches
@@ -106,9 +106,9 @@ public class Server {
         }
 
         private boolean register() throws IOException {
-            writer.println("Enter your desired username:");
+            // writer.println("Enter your desired username:");
             String username = reader.readLine();
-            writer.println("Enter your desired password:");
+            // writer.println("Enter your desired password:");
             String password = reader.readLine();
         
             // Check if the username is available

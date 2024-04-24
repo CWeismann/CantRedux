@@ -11,15 +11,24 @@ public class Client {
     private static final String TRUSTSTORE_LOCATION = "client_truststore.jks";
     private static final String TRUSTSTORE_PASSWORD = "clientpassword";
 
+    // chat frame
     private JFrame frame;
     private JTextArea chatArea;
     private JTextField messageField;
     private JButton sendButton;
     private PrintWriter writer;
 
+    // login frame
+    private JFrame loginFrame;
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+    private JButton loginButton;
+    private JButton registerButton;
+
     public Client() {
         initializeGUI();
         connectToServer();
+        showLoginOrRegisterPopup();
     }
 
     private void initializeGUI() {
@@ -59,7 +68,7 @@ public class Client {
         panel.add(bottomPanel, BorderLayout.SOUTH);
     
         frame.getContentPane().add(panel);
-        frame.setVisible(true);
+        frame.setVisible(false);
     }    
 
     private void connectToServer() {
@@ -82,10 +91,16 @@ public class Client {
                     String message;
                     while ((message = reader.readLine()) != null) {
                         // Check if the message indicates successful registration
-                        if (message.startsWith("REGISTRATION_")) {
-                            // Close the window after successful registration
-                            frame.dispose();
-                            System.exit(0);
+                        if (message.startsWith("LOGIN_SUCCESS")) {
+                            // Close the window after successful login
+                            loginFrame.dispose();
+                            frame.setVisible(true);
+                        } else if (message.startsWith("LOGIN_FAILED")) {
+                            JOptionPane.showMessageDialog(frame, "Login failed. Please try again.");
+                        } else if (message.startsWith("REGISTRATION_SUCCESS")) {
+                            JOptionPane.showMessageDialog(frame, "Registration successful. You can now login.");
+                        } else if (message.startsWith("REGISTRATION_FAILED")) {
+                            JOptionPane.showMessageDialog(frame, "Registration failed. Please try again.");
                         } else {
                             chatArea.append(message + "\n");
                         }
@@ -108,6 +123,48 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void showLoginOrRegisterPopup() {
+        loginFrame = new JFrame("Login or Register");
+        loginFrame.setSize(400, 150);
+        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel loginPanel = new JPanel();
+        loginPanel.setLayout(new GridLayout(3, 2));
+
+        loginPanel.add(new JLabel("Username:"));
+        usernameField = new JTextField();
+        loginPanel.add(usernameField);
+
+        loginPanel.add(new JLabel("Password:"));
+        passwordField = new JPasswordField();
+        loginPanel.add(passwordField);
+
+        loginButton = new JButton("Login");
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                writer.println("LOGIN");
+                writer.println(usernameField.getText());
+                writer.println(passwordField.getPassword());
+            }
+        });
+        loginPanel.add(loginButton);
+
+        registerButton = new JButton("Register");
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                writer.println("REGISTER");
+                writer.println(usernameField.getText());
+                writer.println(passwordField.getPassword());
+            }
+        });
+        loginPanel.add(registerButton);
+
+        loginFrame.getContentPane().add(loginPanel);
+        loginFrame.setVisible(true);
     }
 
     public static void main(String[] args) {
