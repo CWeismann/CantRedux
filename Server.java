@@ -1,11 +1,8 @@
 import javax.net.ssl.*;
 import java.io.*;
-// import java.net.Authenticator;
-// import java.net.PasswordAuthentication;
+import java.net.*;
 import java.security.*;
 import java.util.*;
-// import javax.mail.*;
-// import javax.mail.internet.*;
 
 public class Server {
     private static final int PORT = 12345;
@@ -129,34 +126,52 @@ public class Server {
         }
 
         private void forgotPassword() throws IOException {
+            // doesn't work yet but looks cool
             String username = reader.readLine();
         
             if (users.containsKey(username)) {
-                // String senderEmail = "your_email@gmail.com";
-                // String senderPassword = "your_password";
-                // String recipientEmail = username;
-                // Properties properties = new Properties();
-                // properties.put("mail.smtp.host", "smtp.gmail.com");
-                // properties.put("mail.smtp.port", "587");
-                // properties.put("mail.smtp.auth", "true");
-                // properties.put("mail.smtp.starttls.enable", "true");
-                // Authenticator auth = new Authenticator() {
-                //     protected PasswordAuthentication getPasswordAuthentication() {
-                //         return new PasswordAuthentication(senderEmail, senderPassword.toCharArray());
-                //     }
-                // };
-                // Session session = Session.getInstance(properties, auth);
-                // try {
-                //     MimeMessage message = new MimeMessage(session);
-                //     message.setFrom(new InternetAddress(senderEmail));
-                //     message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
-                //     message.setSubject("Test Email from Java");
-                //     message.setText("This is a test email sent from JavaMail API.");
-                //     Transport.send(message);
-                //     System.out.println("Email sent successfully!");
-                // } catch (MessagingException e) {
-                //     System.out.println("Failed to send email. Error: " + e.getMessage());
-                // }
+                String smtpServer = "your_smtp_server";
+                int port = 25; // Default SMTP port
+
+                String senderEmail = "noreply@cant.com";
+                String recipientEmail = username;
+                String subject = "Password Recovery";
+                String messageBody = "Bla Bla Bla"; // replace with temp password
+
+                try {
+                    // Connect to the SMTP server
+                    Socket emailSocket = new Socket(smtpServer, port);
+                    PrintWriter out = new PrintWriter(emailSocket.getOutputStream(), true);
+                    BufferedReader in = new BufferedReader(new InputStreamReader(emailSocket.getInputStream()));
+
+                    // Send email commands
+                    out.println("HELO " + smtpServer);
+                    out.println("MAIL FROM:<" + senderEmail + ">");
+                    out.println("RCPT TO:<" + recipientEmail + ">");
+                    out.println("DATA");
+                    out.println("Subject: " + subject);
+                    out.println(); // Empty line to separate headers from message body
+                    out.println(messageBody);
+                    out.println(".");
+                    out.println("QUIT");
+
+                    // Read server response
+                    String response;
+                    while ((response = in.readLine()) != null) {
+                        System.out.println("Server: " + response);
+                        if (response.startsWith("250 ")) {
+                            // 250 code indicates successful command execution
+                            break;
+                        }
+                    }
+
+                    // Close the connection
+                    out.close();
+                    in.close();
+                    emailSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             writer.println("A recovery password has been sent to your email.");
         }
