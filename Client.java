@@ -27,6 +27,7 @@ public class Client {
     private JPasswordField passwordField;
     private JButton loginButton;
     private JButton registerButton;
+    private JButton forgotButton;
     Color backgroundColor = Color.BLACK;
     Color textColor = new Color(0, 255, 0); // Green
 
@@ -174,7 +175,7 @@ public class Client {
         loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel loginPanel = new JPanel();
-        loginPanel.setLayout(new GridLayout(3, 2));
+        loginPanel.setLayout(new GridLayout(4, 2));
         loginPanel.setBackground(backgroundColor);
 
         JLabel usernameLabel = new JLabel("Username:");
@@ -211,6 +212,19 @@ public class Client {
         loginButton.setFont(new Font("Monospaced", Font.PLAIN, 12));
         loginPanel.add(loginButton);
 
+        forgotButton = new JButton("Forgot Password?");
+        forgotButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                writer.println("FORGOT");
+                writer.println(usernameField.getText());
+            }
+        });
+        forgotButton.setBackground(backgroundColor);
+        forgotButton.setForeground(textColor);
+        forgotButton.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        loginPanel.add(forgotButton);
+
         registerButton = new JButton("Register");
         registerButton.addActionListener(new ActionListener() {
             @Override
@@ -218,8 +232,8 @@ public class Client {
                 String password = new String(passwordField.getPassword());
                 Pattern pattern = Pattern.compile("\\d");
                 Matcher matcher = pattern.matcher(password);
-                if (usernameField.getText().contains(" ")) {
-                    JOptionPane.showMessageDialog(frame, "Username cannot contain a space.");
+                if (isValidEmail(usernameField.getText())) {
+                    JOptionPane.showMessageDialog(frame, "Username must be a valid email.");
                 } else if (password.length() < 8) {
                     JOptionPane.showMessageDialog(frame, "Password must be eight characters or longer.");
                 } else if (!matcher.find()) {
@@ -261,6 +275,13 @@ public class Client {
                 e.printStackTrace();
             }
         }
+    };
+
+    public static boolean isValidEmail(String email) {
+        String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\n$";
+        Pattern pattern = Pattern.compile(EMAIL_REGEX);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

@@ -1,7 +1,11 @@
 import javax.net.ssl.*;
 import java.io.*;
+// import java.net.Authenticator;
+// import java.net.PasswordAuthentication;
 import java.security.*;
 import java.util.*;
+// import javax.mail.*;
+// import javax.mail.internet.*;
 
 public class Server {
     private static final int PORT = 12345;
@@ -65,6 +69,8 @@ public class Server {
                         isAuthenticated = login();
                     } else if (line.equalsIgnoreCase("REGISTER")) {
                         register();
+                    } else if (line.equalsIgnoreCase("FORGOT")) {
+                        forgotPassword();
                     } else {
                         writer.println("Invalid option. Please enter LOGIN or REGISTER.");
                     }
@@ -121,8 +127,40 @@ public class Server {
                 return false;
             }
         }
-        
 
+        private void forgotPassword() throws IOException {
+            String username = reader.readLine();
+        
+            if (users.containsKey(username)) {
+                // String senderEmail = "your_email@gmail.com";
+                // String senderPassword = "your_password";
+                // String recipientEmail = username;
+                // Properties properties = new Properties();
+                // properties.put("mail.smtp.host", "smtp.gmail.com");
+                // properties.put("mail.smtp.port", "587");
+                // properties.put("mail.smtp.auth", "true");
+                // properties.put("mail.smtp.starttls.enable", "true");
+                // Authenticator auth = new Authenticator() {
+                //     protected PasswordAuthentication getPasswordAuthentication() {
+                //         return new PasswordAuthentication(senderEmail, senderPassword.toCharArray());
+                //     }
+                // };
+                // Session session = Session.getInstance(properties, auth);
+                // try {
+                //     MimeMessage message = new MimeMessage(session);
+                //     message.setFrom(new InternetAddress(senderEmail));
+                //     message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
+                //     message.setSubject("Test Email from Java");
+                //     message.setText("This is a test email sent from JavaMail API.");
+                //     Transport.send(message);
+                //     System.out.println("Email sent successfully!");
+                // } catch (MessagingException e) {
+                //     System.out.println("Failed to send email. Error: " + e.getMessage());
+                // }
+            }
+            writer.println("A recovery password has been sent to your email.");
+        }
+        
         private void handleMessages() throws IOException {
             String message;
             while ((message = reader.readLine()) != null) {
