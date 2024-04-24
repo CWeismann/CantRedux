@@ -12,7 +12,7 @@ public class Server {
     private static final String TRUSTSTORE_PASSWORD = "serverpassword";
 
     private static Map<String, PrintWriter> clients = new HashMap<>();
-    private static Map<String, String> users = new HashMap<>();
+    private static Map<String, Password> users = new HashMap<>();
 
     public static void main(String[] args) {
         try {
@@ -91,13 +91,12 @@ public class Server {
         }
 
         private boolean login() throws IOException {
-            // writer.println("Enter your username:");
             String username = reader.readLine();
-            // writer.println("Enter your password:");
-            String password = reader.readLine();
+            Password storedPassword = users.get(username);
+            String hashedPassword = Password.hashPassword(reader.readLine(), storedPassword.getSalt());
 
             // Check if the user exists and the password matches
-            if (users.containsKey(username) && users.get(username).equals(password)) {
+            if (users.containsKey(username) && storedPassword.getHashedPassword().equals(hashedPassword)) {
                 this.username = username;
                 clients.put(username, writer);
                 writer.println("LOGIN_SUCCESS");
@@ -116,7 +115,8 @@ public class Server {
         
             // Check if the username is available
             if (!users.containsKey(username)) {
-                users.put(username, password);
+                Password hashedPassword = new Password(password);
+                users.put(username, hashedPassword);
                 writer.println("REGISTRATION_SUCCESS");
                 return true;
             } else {
