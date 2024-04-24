@@ -182,7 +182,9 @@ public class Client {
                 String password = new String(passwordField.getPassword());
                 Pattern pattern = Pattern.compile("\\d");
                 Matcher matcher = pattern.matcher(password);
-                if (password.length() < 8) {
+                if (usernameField.getText().contains(" ")) {
+                    JOptionPane.showMessageDialog(frame, "Username cannot contain a space.");
+                } else if (password.length() < 8) {
                     JOptionPane.showMessageDialog(frame, "Password must be eight characters or longer.");
                 } else if (!matcher.find()) {
                     JOptionPane.showMessageDialog(frame, "Password must contain a number.");
