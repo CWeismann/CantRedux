@@ -110,7 +110,7 @@ public class Server {
             String username = reader.readLine();
             writer.println("Enter your desired password:");
             String password = reader.readLine();
-
+        
             // Check if the username is available
             if (!users.containsKey(username)) {
                 users.put(username, password);
@@ -121,6 +121,7 @@ public class Server {
                 return false;
             }
         }
+        
 
         private void handleMessages() throws IOException {
             String message;
