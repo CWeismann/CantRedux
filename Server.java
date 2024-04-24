@@ -77,7 +77,7 @@ public class Server {
             } finally {
                 if (username != null) {
                     clients.remove(username);
-                    users.remove(username);
+                    // users.remove(username);
                 }
                 try {
                     socket.close();

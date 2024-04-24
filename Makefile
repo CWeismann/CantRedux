@@ -21,5 +21,5 @@ all: $(SOURCES)
 clean:
 	find $(OUTDIR) -name '*.class' -delete
 	find $(OUTDIR) -name '*.db' -delete
-	find $(OUTDIR) -name '*_conversations.txt' -delete
+	find $(OUTDIR) -name '*_messages.txt' -delete
 .PHONY: all clean

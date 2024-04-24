@@ -19,6 +19,7 @@ public class Client {
     private JTextField messageField;
     private JButton sendButton;
     private PrintWriter writer;
+    private String username;
 
     // login frame
     private JFrame loginFrame;
@@ -71,6 +72,14 @@ public class Client {
     
         frame.getContentPane().add(panel);
         frame.setVisible(false);
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                saveMessagesToFile();
+                frame.dispose();
+            }
+        });
     }    
 
     private void connectToServer() {
@@ -97,6 +106,7 @@ public class Client {
                             // Close the window after successful login
                             loginFrame.dispose();
                             frame.setVisible(true);
+                            openMessagesFile();
                         } else if (message.startsWith("LOGIN_FAILED")) {
                             JOptionPane.showMessageDialog(frame, "Login failed. Please try again.");
                         } else if (message.startsWith("REGISTRATION_SUCCESS")) {
@@ -120,6 +130,17 @@ public class Client {
     private void sendMessage() {
         try {
             String message = messageField.getText();
+            if (message.startsWith("@")) {
+                // Direct message
+                int spaceIndex = message.indexOf(" ");
+                if (spaceIndex != -1) {
+                    String recipient = message.substring(1, spaceIndex);
+                    String directMessage = message.substring(spaceIndex + 1);
+                    chatArea.append("(Direct to " + recipient + "): " + directMessage);;
+                } else {
+                    writer.println("Invalid direct message format. Use '@username message'");
+                }
+            }
             writer.println(message);
             messageField.setText("");
         } catch (Exception e) {
@@ -178,6 +199,28 @@ public class Client {
         loginFrame.setVisible(true);
     }
 
+    private void saveMessagesToFile() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(username + "_messages.txt"))) {
+            writer.println(chatArea.getText());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openMessagesFile() {
+        username = usernameField.getText();
+        File file = new File(username + "_messages.txt");
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    chatArea.append(line + "\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new Client();
